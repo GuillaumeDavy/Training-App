@@ -7,7 +7,6 @@ import com.guillaume.training.service.ExerciceService;
 import com.guillaume.training.service.PerformanceService;
 import com.guillaume.training.service.UserService;
 import com.guillaume.training.service.model.Exercice;
-import com.guillaume.training.service.model.Performance;
 import com.guillaume.training.service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

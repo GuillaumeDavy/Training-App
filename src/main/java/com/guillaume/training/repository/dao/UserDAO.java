@@ -1,7 +1,7 @@
 package com.guillaume.training.repository.dao;
 
-import com.guillaume.training.controller.mapper.UserMapper;
 import com.guillaume.training.repository.UserRepository;
+import com.guillaume.training.repository.mapper.UserMapper;
 import com.guillaume.training.service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

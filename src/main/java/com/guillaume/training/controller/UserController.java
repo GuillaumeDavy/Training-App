@@ -3,7 +3,6 @@ package com.guillaume.training.controller;
 import com.guillaume.training.controller.dto.UserPayload;
 import com.guillaume.training.controller.dto.UserResponse;
 import com.guillaume.training.controller.mapper.UserMapper;
-import com.guillaume.training.repository.entity.UserEntity;
 import com.guillaume.training.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

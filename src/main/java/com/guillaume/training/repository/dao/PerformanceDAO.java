@@ -1,7 +1,7 @@
 package com.guillaume.training.repository.dao;
 
-import com.guillaume.training.controller.mapper.PerformanceMapper;
 import com.guillaume.training.repository.PerformanceRepository;
+import com.guillaume.training.repository.mapper.PerformanceMapper;
 import com.guillaume.training.service.model.Performance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

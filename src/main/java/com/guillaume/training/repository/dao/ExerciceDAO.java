@@ -1,7 +1,7 @@
 package com.guillaume.training.repository.dao;
 
-import com.guillaume.training.controller.mapper.ExerciceMapper;
 import com.guillaume.training.repository.ExerciceRepository;
+import com.guillaume.training.repository.mapper.ExerciceMapper;
 import com.guillaume.training.service.model.Exercice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,7 +18,6 @@ public class ExerciceDAO {
     public ExerciceDAO(ExerciceRepository exerciceRepository) {
         this.exerciceRepository = exerciceRepository;
     }
-
     public List<Exercice> findAll(){
         return exerciceRepository.findAll().stream()
                 .map(ExerciceMapper::getModelFromEntity)

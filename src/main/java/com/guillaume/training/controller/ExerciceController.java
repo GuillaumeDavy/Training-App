@@ -3,14 +3,11 @@ package com.guillaume.training.controller;
 import com.guillaume.training.controller.dto.ExercicePayload;
 import com.guillaume.training.controller.dto.ExerciceResponse;
 import com.guillaume.training.controller.mapper.ExerciceMapper;
-import com.guillaume.training.repository.entity.ExerciceEntity;
 import com.guillaume.training.service.ExerciceService;
-import com.guillaume.training.service.model.Exercice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
