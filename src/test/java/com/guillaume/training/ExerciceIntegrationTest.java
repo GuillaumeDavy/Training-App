@@ -117,7 +117,10 @@ class ExerciceIntegrationTest {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", is("Could not find exercice 1"));
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find exercice 1")
+                );
 
         String requestBody = objectMapper.writeValueAsString(new ExercicePayload(1L, "exercice", "description"));
 
@@ -171,6 +174,9 @@ class ExerciceIntegrationTest {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", is("Could not find exercice 1"));
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find exercice 1")
+                );
     }
 }

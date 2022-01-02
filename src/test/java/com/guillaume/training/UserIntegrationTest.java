@@ -112,7 +112,10 @@ class UserIntegrationTest {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", is("Could not find user 1"));
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find user 1")
+                );
     }
 
     @Sql({"/drop_create_schema.sql", "/create_default_user_script.sql"})
@@ -129,6 +132,9 @@ class UserIntegrationTest {
                 .post("/users")
                 .then()
                 .statusCode(409)
-                .body("message", is("User already exists for email email1@email.fr"));
+                .body(
+                        "status", is("CONFLICT"),
+                        "message", is("User already exists for email email1@email.fr")
+                );
     }
 }

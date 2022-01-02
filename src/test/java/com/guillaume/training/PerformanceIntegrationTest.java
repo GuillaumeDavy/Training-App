@@ -129,7 +129,10 @@ public class PerformanceIntegrationTest {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", is("Could not find performance 1"));
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find performance 1")
+                );
 
         String requestBody = objectMapper.writeValueAsString(new PerformancePayload(1L, 60.5F, 1L, 1L));
 
@@ -196,6 +199,9 @@ public class PerformanceIntegrationTest {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", is("Could not find performance 1"));
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find performance 1")
+                );
     }
 }
