@@ -16,14 +16,16 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql({"/drop_create_schema.sql"})
-@ContextConfiguration(initializers = { ExerciceIntegrationTest.Initializer.class})
-class ExerciceIntegrationTest {
+@ContextConfiguration(initializers = { UserIntegrationTest.Initializer.class})
+class UserIntegrationTest {
 
     @LocalServerPort
     int port;
@@ -53,96 +55,79 @@ class ExerciceIntegrationTest {
 
     @Test
     @SneakyThrows
-    public void shouldAddAnExercice() {
+    public void shouldAddAUser() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
-                "  \"name\": \"exercice\",\n" +
-                "  \"description\": \"description\" \n}";
+                "  \"name\": \"user\",\n" +
+                "  \"email\": \"email@email.fr\" \n}";
 
         given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/exercices")
+                .post("/users")
                 .then()
                 .statusCode(200)
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "name", is("exercice"),
-                        "description", is("description")
+                        "name", is("user"),
+                        "email", is("email@email.fr")
                 );
     }
 
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
+    @Sql({"/drop_create_schema.sql", "/create_default_user_script.sql"})
     @Test
-    @SneakyThrows
-    public void shouldUpdateAnExercice() {
-        get("/exercices/1")
+    public void shouldFindAnExistingUserByID(){
+        get("/users/1")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body(
                         "id", is(1),
-                        "name", is("exercice1"),
-                        "description", is("description")
-                );
-
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"exercice modifié\",\n" +
-                "  \"description\": \"description modifié\" \n}";
-
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(requestBody)
-                .when()
-                .put("/exercices/1")
-                .then()
-                .statusCode(200)
-                .assertThat()
-                .body(
-                        "id", is(1),
-                        "name", is("exercice modifié"),
-                        "description", is("description modifié")
+                        "name", is("user1"),
+                        "email", is("email1@email.fr")
                 );
     }
 
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
+    @Sql({"/drop_create_schema.sql", "/create_default_user_script.sql"})
     @Test
-    public void shouldFindAnExistingExerciceByID(){
-        get("/exercices/1")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body(
-                        "id", is(1),
-                        "name", is("exercice1"),
-                        "description", is("description")
-                );
-    }
-
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
-    @Test
-    public void shouldFindAllExercices(){
-        get("/exercices")
+    public void shouldFindAllUsers(){
+        get("/users")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body(
                         "id", hasItems(1, 2, 3),
-                        "name", hasItems("exercice1", "exercice2", "exercice3"),
-                        "description", hasItems("description", "description", "description")
+                        "name", hasItems("user1", "user2", "user3"),
+                        "email", hasItems("email1@email.fr", "email2@email.fr", "email3@email.fr")
                 );
     }
 
     @Test
-    public void shouldReturnAnInternalErrorIfExerciceDoesNotExist(){
-        get("/exercices/1")
+    public void shouldReturnAnInternalErrorIfUserDoesNotExists(){
+        get("/users/1")
                 .then()
                 .assertThat()
+                .statusCode(500);
+    }
+
+    @Sql({"/drop_create_schema.sql", "/create_default_user_script.sql"})
+    @Test
+    public void shouldReturnAnInternalErrorIfUserEmailAlreadyExists(){
+        String requestBody = "{\n" +
+                "  \"id\": 4,\n" +
+                "  \"name\": \"user1\",\n" +
+                "  \"email\": \"email1@email.fr\" \n}";
+
+        given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/users")
+                .then()
                 .statusCode(500);
     }
 }
