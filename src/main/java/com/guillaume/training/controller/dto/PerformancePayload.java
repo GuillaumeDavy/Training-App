@@ -1,13 +1,13 @@
 package com.guillaume.training.controller.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 @AllArgsConstructor
 public class PerformancePayload {
-    private Long id;
-    private float maxWeight;
-    private Long userID;
-    private Long exerciceID;
+    Long id;
+    float maxWeight;
+    Long userID;
+    Long exerciceID;
 }
