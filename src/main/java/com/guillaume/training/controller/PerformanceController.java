@@ -9,6 +9,7 @@ import com.guillaume.training.service.UserService;
 import com.guillaume.training.service.model.Exercice;
 import com.guillaume.training.service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class PerformanceController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<PerformanceResponse> findAll(){
         return performanceService.findAll()
                 .stream()
@@ -41,6 +43,7 @@ public class PerformanceController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PerformanceResponse add(@RequestBody PerformancePayload performancePayload){
         User user = userService.findById(performancePayload.getUserID());
         Exercice exercice = exerciceService.findById(performancePayload.getExerciceID());
@@ -50,6 +53,7 @@ public class PerformanceController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public PerformanceResponse findById(@PathVariable Long id){
         return PerformanceMapper.getDTOFromModel(
                 performanceService.findById(id)
@@ -57,6 +61,7 @@ public class PerformanceController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public PerformanceResponse update(
             @RequestBody PerformancePayload performancePayload,
             @PathVariable Long id

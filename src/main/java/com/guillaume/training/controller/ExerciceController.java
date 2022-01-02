@@ -5,6 +5,7 @@ import com.guillaume.training.controller.dto.ExerciceResponse;
 import com.guillaume.training.controller.mapper.ExerciceMapper;
 import com.guillaume.training.service.ExerciceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ExerciceController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<ExerciceResponse> findAll(){
         return exerciceService.findAll()
                 .stream()
@@ -29,6 +31,7 @@ public class ExerciceController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ExerciceResponse add(@RequestBody ExercicePayload exercicePayload){
         return ExerciceMapper.getDTOFromModel(
                 exerciceService.add(ExerciceMapper.getModelFromDTO(exercicePayload))
@@ -36,11 +39,13 @@ public class ExerciceController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ExerciceResponse findById(@PathVariable Long id){
         return ExerciceMapper.getDTOFromModel(exerciceService.findById(id));
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ExerciceResponse replaceExercice(
             @RequestBody ExercicePayload exercicePayload,
             @PathVariable Long id

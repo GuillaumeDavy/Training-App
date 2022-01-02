@@ -73,7 +73,7 @@ public class PerformanceIntegrationTest {
                 .when()
                 .post("/performances")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .assertThat()
                 .body(
                         "id", is(1),

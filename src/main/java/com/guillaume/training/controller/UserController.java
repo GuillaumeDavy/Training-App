@@ -5,6 +5,7 @@ import com.guillaume.training.controller.dto.UserResponse;
 import com.guillaume.training.controller.mapper.UserMapper;
 import com.guillaume.training.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     List<UserResponse> findAll() {
         return userService.findAll()
                 .stream()
@@ -29,6 +31,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     UserResponse add(@RequestBody UserPayload userPayload){
         return UserMapper.getDTOFromModel(
                 userService.add(UserMapper.getModelFromDTO(userPayload))
@@ -36,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     UserResponse findById(@PathVariable Long id){
         return UserMapper.getDTOFromModel(
                 userService.findById(id)

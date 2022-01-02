@@ -69,7 +69,7 @@ class UserIntegrationTest {
                 .when()
                 .post("/users")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .assertThat()
                 .body(
                         "id", is(1),

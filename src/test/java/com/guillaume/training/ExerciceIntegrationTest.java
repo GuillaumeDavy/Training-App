@@ -69,7 +69,7 @@ class ExerciceIntegrationTest {
                 .when()
                 .post("/exercices")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .assertThat()
                 .body(
                         "id", is(1),
