@@ -1,7 +1,5 @@
 package com.guillaume.training.repository.entity;
 
-import com.guillaume.training.service.model.Exercice;
-import com.guillaume.training.service.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

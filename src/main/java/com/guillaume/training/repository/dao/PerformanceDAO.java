@@ -1,7 +1,10 @@
 package com.guillaume.training.repository.dao;
 
-import com.guillaume.training.controller.mapper.PerformanceMapper;
 import com.guillaume.training.repository.PerformanceRepository;
+import com.guillaume.training.repository.entity.PerformanceEntity;
+import com.guillaume.training.repository.mapper.ExerciceMapper;
+import com.guillaume.training.repository.mapper.PerformanceMapper;
+import com.guillaume.training.repository.mapper.UserMapper;
 import com.guillaume.training.service.model.Performance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,6 +36,23 @@ public class PerformanceDAO {
     public Performance save(Performance performance){
         return PerformanceMapper.getModelFromEntity(
                 performanceRepository.save(PerformanceMapper.getEntityFromModel(performance))
+        );
+    }
+
+    public Performance upsert(Performance newPerformance, Long id){
+        return PerformanceMapper.getModelFromEntity(
+                performanceRepository.findById(id)
+                        .map(performanceEntity -> {
+                            performanceEntity.setMaxWeight(newPerformance.getMaxWeight());
+                            performanceEntity.setUserEntity(UserMapper.getEntityFromModel(newPerformance.getUser()));
+                            performanceEntity.setExerciceEntity(ExerciceMapper.getEntityFromModel(newPerformance.getExercice()));
+                            return performanceRepository.save(performanceEntity);
+                        })
+                        .orElseGet(() -> {
+                            PerformanceEntity performanceEntity = PerformanceMapper.getEntityFromModel(newPerformance);
+                            performanceEntity.setId(id);
+                            return performanceRepository.save(performanceEntity);
+                        })
         );
     }
 }

@@ -30,17 +30,7 @@ public class PerformanceService {
         return performanceDAO.save(performance);
     }
 
-    public Performance update(Performance newPerformance, Long id){
-        return performanceDAO.findById(id)
-                .map(performance -> {
-                    performance.setMaxWeight(newPerformance.getMaxWeight());
-                    performance.setUser(newPerformance.getUser());
-                    performance.setExercice(newPerformance.getExercice());
-                    return performanceDAO.save(performance);
-                })
-                .orElseGet(() -> {
-                    newPerformance.setId(id);
-                    return performanceDAO.save(newPerformance);
-                });
+    public Performance update(Performance performance, Long id){
+       return performanceDAO.upsert(performance, id);
     }
 }
