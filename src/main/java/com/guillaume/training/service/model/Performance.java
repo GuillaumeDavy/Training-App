@@ -1,9 +1,9 @@
 package com.guillaume.training.service.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 @AllArgsConstructor
 public class Performance {
     private Long id;

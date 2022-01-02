@@ -31,15 +31,6 @@ public class ExerciceService {
     }
 
     public Exercice update(Exercice newExercice, Long id) {
-        return exerciceDAO.findById(id)
-                .map(exercice -> {
-                    exercice.setName(newExercice.getName());
-                    exercice.setDescription(newExercice.getDescription());
-                    return exerciceDAO.save(exercice);
-                })
-                .orElseGet(() -> {
-                    newExercice.setId(id);
-                    return exerciceDAO.save(newExercice);
-                });
+        return exerciceDAO.upsert(newExercice, id);
     }
 }
