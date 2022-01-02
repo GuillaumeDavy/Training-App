@@ -23,9 +23,13 @@ import static org.hamcrest.Matchers.is;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/drop_create_schema.sql"})
-@ContextConfiguration(initializers = { ExerciceIntegrationTest.Initializer.class})
-class ExerciceIntegrationTest {
+@Sql({
+        "/drop_create_schema.sql",
+        "/create_default_user_script.sql",
+        "/create_default_exercice_script.sql"
+})
+@ContextConfiguration(initializers = { PerformanceIntegrationTest.Initializer.class})
+public class PerformanceIntegrationTest {
 
     @LocalServerPort
     int port;
@@ -55,123 +59,147 @@ class ExerciceIntegrationTest {
 
     @Test
     @SneakyThrows
-    public void shouldAddAnExercice() {
+    public void shouldAddAPerformance() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
-                "  \"name\": \"exercice\",\n" +
-                "  \"description\": \"description\" \n}";
+                "  \"maxWeight\": 60.5,\n" +
+                "  \"userID\": 1,\n" +
+                "  \"exerciceID\": 1 \n}";
 
         given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/exercices")
+                .post("/performances")
                 .then()
                 .statusCode(200)
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "name", is("exercice"),
-                        "description", is("description")
+                        "maxWeight", is(60.5f),
+                        "exerciceID", is(1),
+                        "userID", is(1)
                 );
     }
 
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
+    @Sql({
+            "/drop_create_schema.sql",
+            "/create_default_user_script.sql",
+            "/create_default_exercice_script.sql",
+            "/create_default_performance_script.sql"
+    })
     @Test
     @SneakyThrows
-    public void shouldUpdateAnExercice() {
-        get("/exercices/1")
+    public void shouldUpdateAPerformance() {
+        get("/performances/1")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body(
                         "id", is(1),
-                        "name", is("exercice1"),
-                        "description", is("description")
+                        "maxWeight", is(50.5f),
+                        "exerciceID", is(1),
+                        "userID", is(1)
                 );
 
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
-                "  \"name\": \"exercice modifié\",\n" +
-                "  \"description\": \"description modifié\" \n}";
+                "  \"maxWeight\": 60.5,\n" +
+                "  \"userID\": 1,\n" +
+                "  \"exerciceID\": 1 \n}";
 
         given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(requestBody)
                 .when()
-                .put("/exercices/1")
+                .put("/performances/1")
                 .then()
                 .statusCode(200)
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "name", is("exercice modifié"),
-                        "description", is("description modifié")
+                        "maxWeight", is(60.5f),
+                        "exerciceID", is(1),
+                        "userID", is(1)
                 );
     }
 
     @Test
     @SneakyThrows
-    public void shouldCreateAnExerciceIfTryingToUpdateAnNonExistingExercice() {
-        get("/exercices/1")
+    public void shouldCreateAnPerformanceIfTryingToUpdateAnNonExistingPerformance() {
+        get("/performances/1")
                 .then()
                 .assertThat()
                 .statusCode(500);
 
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
-                "  \"name\": \"exercice\",\n" +
-                "  \"description\": \"description\" \n}";
+                "  \"maxWeight\": 60.5,\n" +
+                "  \"userID\": 1,\n" +
+                "  \"exerciceID\": 1 \n}";
 
         given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(requestBody)
                 .when()
-                .put("/exercices/1")
+                .put("/performances/1")
                 .then()
                 .statusCode(200)
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "name", is("exercice"),
-                        "description", is("description")
+                        "maxWeight", is(60.5f),
+                        "exerciceID", is(1),
+                        "userID", is(1)
                 );
     }
 
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
+    @Sql({
+            "/drop_create_schema.sql",
+            "/create_default_user_script.sql",
+            "/create_default_exercice_script.sql",
+            "/create_default_performance_script.sql"
+    })
     @Test
-    public void shouldFindAnExistingExerciceByID(){
-        get("/exercices/1")
+    public void shouldFindAnExistingPerformanceeByID(){
+        get("/performances/1")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body(
                         "id", is(1),
-                        "name", is("exercice1"),
-                        "description", is("description")
+                        "maxWeight", is(50.5f),
+                        "exerciceID", is(1),
+                        "userID", is(1)
                 );
     }
 
-    @Sql({"/drop_create_schema.sql", "/create_default_exercice_script.sql"})
+    @Sql({
+            "/drop_create_schema.sql",
+            "/create_default_user_script.sql",
+            "/create_default_exercice_script.sql",
+            "/create_default_performance_script.sql"
+    })
     @Test
-    public void shouldFindAllExercices(){
-        get("/exercices")
+    public void shouldFindAllPerformances(){
+        get("/performances")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body(
                         "id", hasItems(1, 2, 3),
-                        "name", hasItems("exercice1", "exercice2", "exercice3"),
-                        "description", hasItems("description", "description", "description")
+                        "maxWeight", hasItems(50.5f, 60f, 10f),
+                        "exerciceID", hasItems(1, 2, 3),
+                        "userID", hasItems(1, 2, 3)
                 );
     }
 
     @Test
-    public void shouldReturnAnInternalErrorIfExerciceDoesNotExist(){
-        get("/exercices/1")
+    public void shouldReturnAnInternalErrorIfPerformanceDoesNotExist(){
+        get("/performances/1")
                 .then()
                 .assertThat()
                 .statusCode(500);

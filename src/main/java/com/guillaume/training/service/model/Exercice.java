@@ -6,7 +6,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class Exercice {
-    private Long id;
-    private String name;
-    private String description;
+    Long id;
+    String name;
+    String description;
 }

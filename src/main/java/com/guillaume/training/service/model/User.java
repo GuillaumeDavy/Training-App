@@ -6,7 +6,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class User {
-    private Long id;
-    private String name;
-    private String email;
+    Long id;
+    String name;
+    String email;
 }

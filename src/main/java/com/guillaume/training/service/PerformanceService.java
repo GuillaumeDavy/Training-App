@@ -30,7 +30,7 @@ public class PerformanceService {
         return performanceDAO.save(performance);
     }
 
-    public Performance update(Performance newPerformance, Long id){
-       return performanceDAO.upsert(newPerformance, id);
+    public Performance update(Performance performance, Long id){
+       return performanceDAO.upsert(performance, id);
     }
 }

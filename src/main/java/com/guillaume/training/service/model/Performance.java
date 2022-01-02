@@ -6,8 +6,8 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class Performance {
-    private Long id;
-    private float maxWeight;
-    private User user;
-    private Exercice exercice;
+    Long id;
+    float maxWeight;
+    User user;
+    Exercice exercice;
 }

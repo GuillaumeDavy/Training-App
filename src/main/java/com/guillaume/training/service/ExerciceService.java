@@ -30,7 +30,7 @@ public class ExerciceService {
         return exerciceDAO.save(exercice);
     }
 
-    public Exercice update(Exercice newExercice, Long id) {
-        return exerciceDAO.upsert(newExercice, id);
+    public Exercice update(Exercice exercice, Long id) {
+        return exerciceDAO.upsert(exercice, id);
     }
 }
