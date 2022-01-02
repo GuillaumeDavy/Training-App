@@ -1,5 +1,6 @@
 package com.guillaume.training;
 
+import com.guillaume.training.controller.dto.ExercicePayload;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import org.junit.ClassRule;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
@@ -26,6 +28,8 @@ import static org.hamcrest.Matchers.is;
 @Sql({"/drop_create_schema.sql"})
 @ContextConfiguration(initializers = { ExerciceIntegrationTest.Initializer.class})
 class ExerciceIntegrationTest {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @LocalServerPort
     int port;
@@ -56,10 +60,7 @@ class ExerciceIntegrationTest {
     @Test
     @SneakyThrows
     public void shouldAddAnExercice() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"exercice\",\n" +
-                "  \"description\": \"description\" \n}";
+        String requestBody = objectMapper.writeValueAsString(new ExercicePayload(1L, "exercice", "description"));
 
         given()
                 .header("Content-type", "application/json")
@@ -91,10 +92,7 @@ class ExerciceIntegrationTest {
                         "description", is("description")
                 );
 
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"exercice modifié\",\n" +
-                "  \"description\": \"description modifié\" \n}";
+        String requestBody = objectMapper.writeValueAsString(new ExercicePayload(1L, "exercice modifié", "description modifié"));
 
         given()
                 .header("Content-type", "application/json")
@@ -118,12 +116,13 @@ class ExerciceIntegrationTest {
         get("/exercices/1")
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(404)
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find exercice 1")
+                );
 
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"exercice\",\n" +
-                "  \"description\": \"description\" \n}";
+        String requestBody = objectMapper.writeValueAsString(new ExercicePayload(1L, "exercice", "description"));
 
         given()
                 .header("Content-type", "application/json")
@@ -174,6 +173,10 @@ class ExerciceIntegrationTest {
         get("/exercices/1")
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(404)
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find exercice 1")
+                );
     }
 }

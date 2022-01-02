@@ -1,5 +1,6 @@
 package com.guillaume.training;
 
+import com.guillaume.training.controller.dto.UserPayload;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import org.junit.ClassRule;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
@@ -26,6 +28,8 @@ import static org.hamcrest.Matchers.is;
 @Sql({"/drop_create_schema.sql"})
 @ContextConfiguration(initializers = { UserIntegrationTest.Initializer.class})
 class UserIntegrationTest {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @LocalServerPort
     int port;
@@ -56,10 +60,7 @@ class UserIntegrationTest {
     @Test
     @SneakyThrows
     public void shouldAddAUser() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"user\",\n" +
-                "  \"email\": \"email@email.fr\" \n}";
+        String requestBody = objectMapper.writeValueAsString(new UserPayload(1L, "user", "email@email.fr"));
 
         given()
                 .header("Content-type", "application/json")
@@ -110,16 +111,18 @@ class UserIntegrationTest {
         get("/users/1")
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(404)
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find user 1")
+                );
     }
 
     @Sql({"/drop_create_schema.sql", "/create_default_user_script.sql"})
     @Test
+    @SneakyThrows
     public void shouldReturnAnInternalErrorIfUserEmailAlreadyExists(){
-        String requestBody = "{\n" +
-                "  \"id\": 4,\n" +
-                "  \"name\": \"user1\",\n" +
-                "  \"email\": \"email1@email.fr\" \n}";
+        String requestBody = objectMapper.writeValueAsString(new UserPayload(4L, "user1", "email1@email.fr"));
 
         given()
                 .header("Content-type", "application/json")
@@ -128,6 +131,10 @@ class UserIntegrationTest {
                 .when()
                 .post("/users")
                 .then()
-                .statusCode(500);
+                .statusCode(409)
+                .body(
+                        "status", is("CONFLICT"),
+                        "message", is("User already exists for email email1@email.fr")
+                );
     }
 }

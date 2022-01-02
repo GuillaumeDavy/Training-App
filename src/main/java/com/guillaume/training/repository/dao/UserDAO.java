@@ -1,5 +1,6 @@
 package com.guillaume.training.repository.dao;
 
+import com.guillaume.training.exception.UserAlreadyExistsException;
 import com.guillaume.training.repository.UserRepository;
 import com.guillaume.training.repository.mapper.UserMapper;
 import com.guillaume.training.service.model.User;
@@ -31,8 +32,11 @@ public class UserDAO {
     }
 
     public User save(User user){
-        return UserMapper.getModelFromEntity(
-                userRepository.save(UserMapper.getEntityFromModel(user))
-        );
+        //Check if email already exists in BD
+        userRepository.findByEmail(user.getEmail()).map(u -> {
+            throw new UserAlreadyExistsException(user.getEmail());
+        });
+
+        return UserMapper.getModelFromEntity(userRepository.save(UserMapper.getEntityFromModel(user)));
     }
 }

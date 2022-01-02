@@ -1,5 +1,6 @@
 package com.guillaume.training;
 
+import com.guillaume.training.controller.dto.PerformancePayload;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import org.junit.ClassRule;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
@@ -30,6 +32,8 @@ import static org.hamcrest.Matchers.is;
 })
 @ContextConfiguration(initializers = { PerformanceIntegrationTest.Initializer.class})
 public class PerformanceIntegrationTest {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @LocalServerPort
     int port;
@@ -60,11 +64,7 @@ public class PerformanceIntegrationTest {
     @Test
     @SneakyThrows
     public void shouldAddAPerformance() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"maxWeight\": 60.5,\n" +
-                "  \"userID\": 1,\n" +
-                "  \"exerciceID\": 1 \n}";
+        String requestBody = objectMapper.writeValueAsString(new PerformancePayload(1L, 60.5F, 1L, 1L));
 
         given()
                 .header("Content-type", "application/json")
@@ -77,7 +77,7 @@ public class PerformanceIntegrationTest {
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "maxWeight", is(60.5f),
+                        "maxWeight", is(60.5F),
                         "exerciceID", is(1),
                         "userID", is(1)
                 );
@@ -98,16 +98,12 @@ public class PerformanceIntegrationTest {
                 .statusCode(200)
                 .body(
                         "id", is(1),
-                        "maxWeight", is(50.5f),
+                        "maxWeight", is(50.5F),
                         "exerciceID", is(1),
                         "userID", is(1)
                 );
 
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"maxWeight\": 60.5,\n" +
-                "  \"userID\": 1,\n" +
-                "  \"exerciceID\": 1 \n}";
+        String requestBody = objectMapper.writeValueAsString(new PerformancePayload(1L, 60.5F, 1L, 1L));
 
         given()
                 .header("Content-type", "application/json")
@@ -120,7 +116,7 @@ public class PerformanceIntegrationTest {
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "maxWeight", is(60.5f),
+                        "maxWeight", is(60.5F),
                         "exerciceID", is(1),
                         "userID", is(1)
                 );
@@ -132,13 +128,13 @@ public class PerformanceIntegrationTest {
         get("/performances/1")
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(404)
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find performance 1")
+                );
 
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"maxWeight\": 60.5,\n" +
-                "  \"userID\": 1,\n" +
-                "  \"exerciceID\": 1 \n}";
+        String requestBody = objectMapper.writeValueAsString(new PerformancePayload(1L, 60.5F, 1L, 1L));
 
         given()
                 .header("Content-type", "application/json")
@@ -151,7 +147,7 @@ public class PerformanceIntegrationTest {
                 .assertThat()
                 .body(
                         "id", is(1),
-                        "maxWeight", is(60.5f),
+                        "maxWeight", is(60.5F),
                         "exerciceID", is(1),
                         "userID", is(1)
                 );
@@ -171,7 +167,7 @@ public class PerformanceIntegrationTest {
                 .statusCode(200)
                 .body(
                         "id", is(1),
-                        "maxWeight", is(50.5f),
+                        "maxWeight", is(50.5F),
                         "exerciceID", is(1),
                         "userID", is(1)
                 );
@@ -191,7 +187,7 @@ public class PerformanceIntegrationTest {
                 .statusCode(200)
                 .body(
                         "id", hasItems(1, 2, 3),
-                        "maxWeight", hasItems(50.5f, 60f, 10f),
+                        "maxWeight", hasItems(50.5F, 60F, 10F),
                         "exerciceID", hasItems(1, 2, 3),
                         "userID", hasItems(1, 2, 3)
                 );
@@ -202,6 +198,10 @@ public class PerformanceIntegrationTest {
         get("/performances/1")
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(404)
+                .body(
+                        "status", is("NOT_FOUND"),
+                        "message", is("Could not find performance 1")
+                );
     }
 }
